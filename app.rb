@@ -75,17 +75,21 @@ class HangpersonApp < Sinatra::Base
     ### YOUR CODE HERE ###
     if session[:state] == :win
       erb :win # You may change/remove this line
+    elsif session[:state] == :lose
+      redirect '/lose'
     else
-      erb :show
+      redirect '/show'
     end
   end
   
   get '/lose' do
     ### YOUR CODE HERE ###
-    if session[:state] == :lose
+    if session[:state] == :win
+      redirect '/win'
+    elsif session[:state] == :lose
       erb :lose # You may change/remove this line
     else
-      erb :show
+      redirect '/show'
     end
   end
   
