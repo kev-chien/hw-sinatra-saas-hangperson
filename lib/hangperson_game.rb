@@ -22,7 +22,7 @@ class HangpersonGame
       raise ArgumentError
     end
 
-    unless (letter.is_a? String)
+    unless letter.is_a? String
       raise ArgumentError
     end
 
@@ -36,7 +36,7 @@ class HangpersonGame
 
     letter.downcase! # case insensitive
 
-    # valid guess
+    # valid guess (not repeated?)
     if @guesses.include? letter or @wrong_guesses.include? letter
       return false
     end

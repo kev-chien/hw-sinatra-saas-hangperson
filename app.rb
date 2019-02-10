@@ -31,6 +31,7 @@ class HangpersonApp < Sinatra::Base
     # NOTE: don't change previous line - it's needed by autograder!
 
     @game = HangpersonGame.new(word)
+    session[:state] = :play
     redirect '/show'
   end
   
@@ -40,6 +41,23 @@ class HangpersonApp < Sinatra::Base
   post '/guess' do
     letter = params[:guess].to_s[0]
     ### YOUR CODE HERE ###
+    begin
+      valid = @game.guess letter
+      unless valid
+        flash[:message] = "You have already used that letter."
+      end
+    rescue ArgumentError => error
+      flash[:message] = "Invalid guess."
+    end
+
+    # check win
+    session[:state] = @game.check_win_or_lose
+    if session[:state] == :win
+      redirect '/win'
+    elsif session[:state] == :lose
+      redirect '/lose'
+    end
+
     redirect '/show'
   end
   
@@ -55,12 +73,24 @@ class HangpersonApp < Sinatra::Base
   
   get '/win' do
     ### YOUR CODE HERE ###
-    erb :win # You may change/remove this line
+    if session[:state] == :win
+      erb :win # You may change/remove this line
+    elsif session[:state] == :lose
+      erb :lose # You may change/remove this line
+    else
+      erb :show
+    end
   end
   
   get '/lose' do
     ### YOUR CODE HERE ###
-    erb :lose # You may change/remove this line
+    if session[:state] == :win
+      erb :win # You may change/remove this line
+    elsif session[:state] == :lose
+      erb :lose # You may change/remove this line
+    else
+      erb :show
+    end
   end
   
 end
